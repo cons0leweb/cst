@@ -1,6 +1,6 @@
 name: cst
 version: '${project.version}'
-main: org.cons0leweb.cst.main
+main: org.cons0leweb.cst.Main
 api-version: '1.16'
 commands:
   ctitle:
@@ -23,7 +23,6 @@ commands:
     usage: /cactionbar {player} {message}
     permission: cst.use
     permission-message: You do not have permission to use this command.
-
 permissions:
   cst.use:
     description: Allows the player to use the /ctitle, /cchat, /chelp, and /cactionbar commands.

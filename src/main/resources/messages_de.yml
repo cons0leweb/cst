@@ -10,7 +10,7 @@ invalid_fade_out: "&c⚠ Ungültige Ausblendzeit."
 invalid_action: "&c⚠ Ungültige Aktion."
 message_sent: "&a✓ Nachricht an Spieler gesendet."
 
-help_separator: "&6=================================================="
+help_separator: "&6|------------------------------------------------|"
 help_title: "&e                  cst Hilfe von cons0leweb"
 help_ctitle_usage: "&2❖ &a/ctitle {spieler} {titel};{untertitel} [einblendzeit] [verweilzeit] [ausblendzeit]"
 help_ctitle_description: "&7  - Sendet einen Titel und Untertitel an den angegebenen Spieler."

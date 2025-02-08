@@ -10,7 +10,7 @@ invalid_fade_out: "&c⚠ Invalid fade out time."
 invalid_action: "&c⚠ Invalid action."
 message_sent: "&a✓ Message sent to players."
 
-help_separator: "&6=================================================="
+help_separator: "&6|------------------------------------------------|"
 help_title: "&e                  cst Help by cons0leweb"
 help_ctitle_usage: "&2❖ &a/ctitle {player} {title};{subtitle} [fade in] [stay] [fade out]"
 help_ctitle_description: "&7  - Sends a title and subtitle to the specified player."

@@ -10,7 +10,7 @@ invalid_fade_out: "&c⚠ 无效的淡出时间。"
 invalid_action: "&c⚠ 无效的动作。"
 message_sent: "&a✓ 消息已发送给玩家。"
 
-help_separator: "&6=================================================="
+help_separator: "&6|------------------------------------------------|"
 help_title: "&e                  cst 帮助由 cons0leweb 提供"
 help_ctitle_usage: "&2❖ &a/ctitle {玩家} {标题};{副标题} [淡入时间] [停留时间] [淡出时间]"
 help_ctitle_description: "&7  - 向指定玩家发送标题和副标题。"

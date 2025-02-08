@@ -10,7 +10,7 @@ invalid_fade_out: "&c⚠ 無効なフェードアウト時間。"
 invalid_action: "&c⚠ 無効なアクション。"
 message_sent: "&a✓ メッセージがプレイヤーに送信されました。"
 
-help_separator: "&6=================================================="
+help_separator: "&6|------------------------------------------------|"
 help_title: "&e                  cst ヘルプ by cons0leweb"
 help_ctitle_usage: "&2❖ &a/ctitle {プレイヤー} {タイトル};{サブタイトル} [フェードイン時間] [滞在時間] [フェードアウト時間]"
 help_ctitle_description: "&7  - 指定したプレイヤーにタイトルとサブタイトルを送信します。"

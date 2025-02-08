@@ -10,7 +10,7 @@ invalid_fade_out: "&c⚠ Tiempo de desaparición inválido."
 invalid_action: "&c⚠ Acción inválida."
 message_sent: "&a✓ Mensaje enviado a los jugadores."
 
-help_separator: "&6=================================================="
+help_separator: "&6|------------------------------------------------|"
 help_title: "&e                  cst Ayuda por cons0leweb"
 help_ctitle_usage: "&2❖ &a/ctitle {jugador} {título};{subtítulo} [tiempo de aparición] [tiempo de permanencia] [tiempo de desaparición]"
 help_ctitle_description: "&7  - Envía un título y subtítulo al jugador especificado."

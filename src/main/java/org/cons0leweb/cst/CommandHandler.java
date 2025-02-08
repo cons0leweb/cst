@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class CommandHandler implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
         if (command.getName().equalsIgnoreCase("ctitle")) {
             if (!sender.hasPermission("cst.use")) {
                 sender.sendMessage(plugin.getMessageManager().getFormattedMessage("no_permission"));
@@ -45,7 +46,7 @@ public class CommandHandler implements CommandExecutor {
                 sender.sendMessage(plugin.getMessageManager().getFormattedMessage("no_permission"));
                 return true;
             }
-            sendHelpMessage(sender);
+            sendHelpMessage(sender); // Вызов метода для отправки справочного сообщения
             return true;
         } else if (command.getName().equalsIgnoreCase("cactionbar")) {
             if (!sender.hasPermission("cst.use")) {
@@ -58,100 +59,114 @@ public class CommandHandler implements CommandExecutor {
         return false;
     }
 
+    private String[] parseArguments(String input) {
+        return input.split(";");
+    }
+
     private void handleTitleCommand(CommandSender sender, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(plugin.getMessageManager().getFormattedMessage("ctitle_usage"));
             return;
         }
 
-        List<Player> targetPlayers = getTargetPlayer(sender, args[0]);
-        if (targetPlayers == null || targetPlayers.isEmpty()) return;
+        // Объединяем все аргументы в одну строку
+        String fullArgs = String.join(" ", args);
 
-        String title = "";
-        String subtitle = "";
-        int fadeIn = 10;
-        int stay = 70;
-        int fadeOut = 20;
+        // Разбиваем строку по символу ';'
+        String[] parts = fullArgs.split(";");
 
-        if (args.length >= 2) {
-            String[] titleSubtitle = args[1].split(";", 2);
-            title = titleSubtitle.length > 0 ? titleSubtitle[0] : "";
-            subtitle = titleSubtitle.length > 1 ? titleSubtitle[1] : "";
+        // Проверяем минимальное количество частей
+        if (parts.length < 3) {
+            sender.sendMessage(plugin.getMessageManager().getFormattedMessage("ctitle_usage"));
+            return;
         }
 
-        if (args.length >= 3) {
-            fadeIn = parseTime(sender, args[2], "fade_in");
+        // Первая часть — игрок
+        String playerArg = parts[0].trim();
+        List<Player> targetPlayers = getTargetPlayer(sender, playerArg);
+        if (targetPlayers.isEmpty()) return;
+
+        // Вторая часть — заголовок
+        String title = parts[1].trim();
+
+        // Третья часть — подзаголовок
+        String subtitle = parts[2].trim();
+
+        // Остальные части — время появления, задержки и исчезновения
+        int fadeIn = 10; // Значение по умолчанию
+        int stay = 70;   // Значение по умолчанию
+        int fadeOut = 20; // Значение по умолчанию
+
+        if (parts.length >= 4) {
+            fadeIn = parseTime(sender, parts[3].trim(), "fade_in");
             if (fadeIn == -1) return;
         }
 
-        if (args.length >= 4) {
-            stay = parseTime(sender, args[3], "stay");
+        if (parts.length >= 5) {
+            stay = parseTime(sender, parts[4].trim(), "stay");
             if (stay == -1) return;
         }
 
-        if (args.length >= 5) {
-            fadeOut = parseTime(sender, args[4], "fade_out");
+        if (parts.length >= 6) {
+            fadeOut = parseTime(sender, parts[5].trim(), "fade_out");
             if (fadeOut == -1) return;
         }
 
+        // Применяем цветовые коды
         title = translateColorCodes(title);
         subtitle = translateColorCodes(subtitle);
 
+        // Отправляем заголовок и подзаголовок игрокам
         for (Player player : targetPlayers) {
             sendTitleToPlayer(player, title, subtitle, fadeIn, stay, fadeOut);
         }
+
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("message_sent"));
     }
 
     private void handleChatCommand(CommandSender sender, String[] args) {
-        if (args.length == 0) {
+        if (args.length < 2) {
             sender.sendMessage(plugin.getMessageManager().getFormattedMessage("cchat_usage"));
             return;
         }
 
-        List<Player> targetPlayers = getTargetPlayer(sender, args[0]);
-        if (targetPlayers == null || targetPlayers.isEmpty()) return;
+        // Первая часть — игрок
+        String playerArg = args[0].trim();
+        List<Player> targetPlayers = getTargetPlayer(sender, playerArg);
+        if (targetPlayers.isEmpty()) return;
 
-        String message = "";
-        String action = "";
-        String hoverText = "";
-
-        if (args.length >= 2) {
-            message = args[1];
-        }
-
-        if (args.length >= 3) {
-            action = args[2];
-        }
-
-        if (args.length >= 4) {
-            hoverText = args[3];
-        }
-
+        // Вторая часть — сообщение
+        String message = args[1].trim();
         message = translateColorCodes(message);
-        hoverText = translateColorCodes(hoverText);
 
+        // Отправляем сообщение игрокам
         for (Player player : targetPlayers) {
-            sendChatMessageToPlayer(player, message, action, hoverText);
+            sendChatMessageToPlayer(player, message, "", "");
         }
+
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("message_sent"));
     }
 
     private void handleActionBarCommand(CommandSender sender, String[] args) {
-        if (args.length == 0) {
+        if (args.length < 2) {
             sender.sendMessage(plugin.getMessageManager().getFormattedMessage("cactionbar_usage"));
             return;
         }
 
-        List<Player> targetPlayers = getTargetPlayer(sender, args[0]);
-        if (targetPlayers == null || targetPlayers.isEmpty()) return;
+        // Первая часть — игрок
+        String playerArg = args[0].trim();
+        List<Player> targetPlayers = getTargetPlayer(sender, playerArg);
+        if (targetPlayers.isEmpty()) return;
 
-        String message = args.length > 1 ? String.join(" ", args).substring(args[0].length() + 1) : "";
+        // Вторая часть — сообщение
+        String message = args[1].trim();
         message = translateColorCodes(message);
 
+        // Отправляем сообщение в action bar
         for (Player player : targetPlayers) {
             sendActionBarToPlayer(player, message);
         }
+
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("message_sent"));
     }
 
@@ -161,7 +176,8 @@ public class CommandHandler implements CommandExecutor {
         if (target.equalsIgnoreCase("-")) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(plugin.getMessageManager().getFormattedMessage("player_only_command"));
-                return targetPlayers; // Вернуть пустой список
+                return targetPlayers;
+                //return empty
             }
             targetPlayers.add((Player) sender);
         } else if (target.equalsIgnoreCase("*")) {
@@ -220,17 +236,14 @@ public class CommandHandler implements CommandExecutor {
             sender.sendMessage(plugin.getMessageManager().getFormattedMessage("no_permission"));
             return;
         }
-
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_separator"));
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_title"));
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_separator"));
         sender.sendMessage("");
-
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_ctitle_usage"));
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_ctitle_description"));
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_ctitle_example"));
         sender.sendMessage("");
-
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_cchat_usage"));
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_cchat_description"));
         sender.sendMessage(plugin.getMessageManager().getFormattedMessage("help_cchat_example"));
